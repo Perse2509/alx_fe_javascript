@@ -189,4 +189,67 @@ function init() {
   });
 }
 
+// ====== Create Add Quote Form (if missing) ======
+function createAddQuoteForm() {
+  const formContainer = document.getElementById("addQuoteFormContainer");
+
+  // Prevent duplicates if already exists
+  if (document.getElementById("newQuoteText")) return;
+
+  // Create input for quote text
+  const textInput = document.createElement("input");
+  textInput.type = "text";
+  textInput.id = "newQuoteText";
+  textInput.placeholder = "Enter new quote";
+  textInput.style.margin = "5px";
+  textInput.style.width = "90%";
+
+  // Create input for category
+  const categoryInput = document.createElement("input");
+  categoryInput.type = "text";
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.placeholder = "Enter category";
+  categoryInput.style.margin = "5px";
+  categoryInput.style.width = "90%";
+
+  // Create Add Quote button
+  const addButton = document.createElement("button");
+  addButton.id = "addQuoteButton";
+  addButton.textContent = "Add Quote";
+  addButton.style.marginTop = "10px";
+  addButton.style.padding = "8px 16px";
+  addButton.style.cursor = "pointer";
+
+  // Append all elements to container
+  formContainer.appendChild(textInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+}
+
+
+function init() {
+  loadQuotes();
+  currentFilter = loadLastFilter();
+  populateCategories();
+  filterQuotes();
+
+  // 🔹 Ensure form exists
+  createAddQuoteForm();
+
+  // 🔹 Attach events
+  newQuoteBtn.addEventListener("click", showRandomQuote);
+  addQuoteBtn.addEventListener("click", addQuote);
+  exportBtn.addEventListener("click", exportQuotes);
+  importFileInput.addEventListener("change", importFromJsonFile);
+  clearStorageBtn.addEventListener("click", () => {
+    if (confirm("Clear all quotes and reset?")) {
+      localStorage.clear();
+      quotes = defaultQuotes.slice();
+      populateCategories();
+      filterQuotes();
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", init);
+
