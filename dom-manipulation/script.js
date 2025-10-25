@@ -287,6 +287,8 @@ function init() {
     }
   });
 }
+// Automatically sync quotes every 60 seconds (1 minute)
+setInterval(syncQuotes, 60000);
 
 // ====== Create Add Quote Form (if missing) ======
 function createAddQuoteForm() {
@@ -351,6 +353,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
