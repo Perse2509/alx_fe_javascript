@@ -170,6 +170,35 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
+// ====== Simulate Server Fetch ======
+async function fetchQuotesFromServer() {
+  try {
+    // Simulate a server call delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Simulated server data (you can replace this with a real API fetch)
+    const serverQuotes = [
+      { text: "Change is the end result of all true learning.", category: "Growth" },
+      { text: "Quality means doing it right when no one is looking.", category: "Integrity" },
+      { text: "The future depends on what you do today.", category: "Motivation" }
+    ];
+
+    // Merge with existing quotes (avoid duplicates)
+    const newQuotes = serverQuotes.filter(
+      sq => !quotes.some(local => local.text === sq.text)
+    );
+    quotes.push(...newQuotes);
+
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+
+    console.log("✅ Quotes successfully fetched from server simulation.");
+  } catch (error) {
+    console.error("❌ Error fetching quotes from server:", error);
+  }
+}
+
 // ====== Initialization ======
 function init() {
   loadQuotes();
@@ -254,5 +283,6 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
