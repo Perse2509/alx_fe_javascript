@@ -171,19 +171,21 @@ function importFromJsonFile(event) {
 }
 
 // ====== Simulate Server Fetch ======
+// ====== Fetch Quotes from Server (using real API) ======
 async function fetchQuotesFromServer() {
   try {
-    // Simulate a server call delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    if (!response.ok) throw new Error("Network response was not ok");
 
-    // Simulated server data (you can replace this with a real API fetch)
-    const serverQuotes = [
-      { text: "Change is the end result of all true learning.", category: "Growth" },
-      { text: "Quality means doing it right when no one is looking.", category: "Integrity" },
-      { text: "The future depends on what you do today.", category: "Motivation" }
-    ];
+    const data = await response.json();
 
-    // Merge with existing quotes (avoid duplicates)
+    // Map the fetched posts to fit your quote structure
+    const serverQuotes = data.slice(0, 10).map(post => ({
+      text: post.title.charAt(0).toUpperCase() + post.title.slice(1),
+      category: "Server Quote"
+    }));
+
+    // Merge new server quotes (avoid duplicates)
     const newQuotes = serverQuotes.filter(
       sq => !quotes.some(local => local.text === sq.text)
     );
@@ -193,11 +195,12 @@ async function fetchQuotesFromServer() {
     populateCategories();
     filterQuotes();
 
-    console.log("✅ Quotes successfully fetched from server simulation.");
+    console.log("✅ Quotes successfully fetched from https://jsonplaceholder.typicode.com/posts");
   } catch (error) {
     console.error("❌ Error fetching quotes from server:", error);
   }
 }
+
 
 // ====== Initialization ======
 function init() {
@@ -283,6 +286,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
