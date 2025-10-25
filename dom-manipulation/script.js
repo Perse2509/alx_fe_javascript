@@ -223,6 +223,49 @@ async function sendQuoteToServer(quote) {
   }
 }
 
+// ====== Sync Quotes Between Local and Server ======
+async function syncQuotes() {
+  try {
+    console.log("🔄 Starting quote synchronization...");
+
+    // 1️⃣ Fetch server quotes
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    if (!response.ok) throw new Error("Failed to fetch server quotes");
+
+    const serverData = await response.json();
+
+    // Convert server posts into quote format
+    const serverQuotes = serverData.slice(0, 10).map(post => ({
+      text: post.title.charAt(0).toUpperCase() + post.title.slice(1),
+      category: "Server Quote"
+    }));
+
+    // 2️⃣ Identify new local quotes not on server
+    const unsyncedLocalQuotes = quotes.filter(
+      q => !serverQuotes.some(sq => sq.text === q.text)
+    );
+
+    // 3️⃣ Send each unsynced local quote to server
+    for (const quote of unsyncedLocalQuotes) {
+      await sendQuoteToServer(quote);
+    }
+
+    // 4️⃣ Merge server quotes into local storage (avoid duplicates)
+    const newServerQuotes = serverQuotes.filter(
+      sq => !quotes.some(local => local.text === sq.text)
+    );
+    quotes.push(...newServerQuotes);
+
+    // 5️⃣ Save & re-render
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+
+    console.log("✅ Sync complete. Local and server quotes are now up-to-date.");
+  } catch (error) {
+    console.error("❌ Error during sync:", error);
+  }
+}
 
 // ====== Initialization ======
 function init() {
@@ -308,6 +351,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
