@@ -21,6 +21,8 @@ const defaultQuotes = [
 let quotes = [];
 let filteredQuotes = [];
 let currentFilter = "all";
+let selectedCategory = "all";
+
 
 // DOM Elements
 const quoteDisplay = document.getElementById("quoteDisplay");
@@ -252,4 +254,5 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
