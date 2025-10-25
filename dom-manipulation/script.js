@@ -136,6 +136,9 @@ function addQuote() {
   saveQuotes();
   populateCategories(); // Update dropdown
   filterQuotes(); 
+  // 🔹 Send quote to server
+sendQuoteToServer({ text, category });
+
   showRandomQuote();
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
@@ -198,6 +201,25 @@ async function fetchQuotesFromServer() {
     console.log("✅ Quotes successfully fetched from https://jsonplaceholder.typicode.com/posts");
   } catch (error) {
     console.error("❌ Error fetching quotes from server:", error);
+  }
+}
+
+// ====== Send New Quote to Server (POST) ======
+async function sendQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST", // ✅ Required
+      headers: {
+        "Content-Type": "application/json" // ✅ Required
+      },
+      body: JSON.stringify(quote)
+    });
+
+    const result = await response.json();
+    console.log("✅ Quote successfully sent to server:", result);
+    return result;
+  } catch (error) {
+    console.error("❌ Error sending quote to server:", error);
   }
 }
 
@@ -286,6 +308,7 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
 
 
 
